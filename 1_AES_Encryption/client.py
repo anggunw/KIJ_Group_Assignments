@@ -2,7 +2,9 @@ import base64
 import socket
 import json
 
-TARGET_IP = "192.168.122.237"
+from aes_library import AESLibrary
+
+TARGET_IP = "192.168.122.197"
 TARGET_PORT = 8889
 
 
@@ -56,10 +58,11 @@ class Client:
         print(string)
         if method == 'scratch':
             # call encrypt implementation from scratch function
-            return "file {} has been encrypted using method implemented from scratch" . format(filename)
+            message = ""
+            return message
         elif method == 'library':
-            # call encrypt implementation using library function
-            return "file {} has been encrypted using method implemented using library" . format(filename)
+            message = aeslib.encrypt(filename)
+            return message
         else:
             return "Method not found"
 
@@ -68,10 +71,11 @@ class Client:
         print(string)
         if method == 'scratch':
             # call decrypt implementation from scratch function
-            return "file {} has been decrypted using method implemented from scratch" . format(filename)
+            message = ""
+            return message
         elif method == 'library':
-            # call decrypt implementation using library function
-            return "file {} has been decrypted using method implemented using library" . format(filename)
+            message = aeslib.decrypt(filename)
+            return message
         else:
             return "Method not found"
 
@@ -108,6 +112,10 @@ class Client:
 
 if __name__ == "__main__":
     c = Client()
+    key = b'\xc9ia\x94\x0b\x04\xdb\xa0\x8eR\x10\x9c\xf0\xb9C\x1f'
+    iv = b'\xb34\x0c\x88\xda\xe5N\xd3}R#\xb8\xf4\x11C\xef'
+    aeslib = AESLibrary(key, iv)
+
     while True:
         cmdline = input("Command:")
         print(c.proses(cmdline))

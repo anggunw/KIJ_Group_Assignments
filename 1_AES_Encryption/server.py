@@ -14,13 +14,19 @@ class ProcessTheClient(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
+        rcv = ""
         while True:
             data = self.connection.recv(4096)
             if data:
                 d = data.decode()
-                result = fp.process_string(d)
-                result = result + "\r\n\r\n"
-                self.connection.sendall(result.encode())
+                rcv = rcv + d
+                if rcv[-2:] == '\r\n':
+                    # end of command, processing string
+                    logging.warning("data from client: {}" . format(rcv))
+                    result = fp.process_string(rcv)
+                    result = result + "\r\n\r\n"
+                    self.connection.sendall(result.encode())
+                    rcv = ""
             else:
                 break
         self.connection.close()

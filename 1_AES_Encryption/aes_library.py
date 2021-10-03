@@ -1,21 +1,20 @@
 import os
 import datetime
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
 
 
 class AESLibrary:
-    def __init__(self, key, iv):
+    def __init__(self, key, nonce):
         self.key = key
-        self.iv = iv
+        self.nonce = nonce
 
     def encrypt(self, filename):
         time_start = datetime.datetime.now()
-        cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
+        cipher = AES.new(self.key, AES.MODE_CTR, nonce=self.nonce)
 
         try:
             fp = open(f"{filename}", 'rb')
-            ciphertext = cipher.encrypt(pad(fp.read(), AES.block_size))
+            ciphertext = cipher.encrypt(fp.read())
             fp.close()
         except Exception as e:
             return str(e)
@@ -29,11 +28,11 @@ class AESLibrary:
 
     def decrypt(self, filename):
         time_start = datetime.datetime.now()
-        cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
+        cipher = AES.new(self.key, AES.MODE_CTR, nonce=self.nonce)
 
         try:
             fp = open(f"{filename}", 'rb')
-            plaintext = unpad(cipher.decrypt(fp.read()), AES.block_size)
+            plaintext = cipher.decrypt(fp.read())
             fp.close()
         except Exception as e:
             return str(e)

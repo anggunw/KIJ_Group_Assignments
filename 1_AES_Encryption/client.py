@@ -112,9 +112,9 @@ class Client:
 
 if __name__ == "__main__":
     c = Client()
-    key = b'\xc9ia\x94\x0b\x04\xdb\xa0\x8eR\x10\x9c\xf0\xb9C\x1f'
-    iv = b'\xb34\x0c\x88\xda\xe5N\xd3}R#\xb8\xf4\x11C\xef'
-    aeslib = AESLibrary(key, iv)
+    key = "abcdefghijklmnop".encode()
+    nonce = "12345678".encode()
+    aeslib = AESLibrary(key, nonce)
 
     while True:
         cmdline = input("Command:")

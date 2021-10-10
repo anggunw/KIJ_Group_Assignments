@@ -1,12 +1,14 @@
 import base64
 import socket
 import json
+import sys
 
+from Crypto.Random import get_random_bytes
 from aes_library import AESLibrary
+from rsa_library import RSALibrary
 
-TARGET_IP = "192.168.122.197"
+TARGET_IP = "192.168.1.12"
 TARGET_PORT = 8889
-
 
 class Client:
     def __init__(self):
@@ -109,12 +111,27 @@ class Client:
         else:
             return "Error, {}".format(result['message'])
 
-
 if __name__ == "__main__":
     c = Client()
-    key = "abcdefghijklmnop".encode()
+    key_length = 2048
     nonce = "12345678".encode()
-    aeslib = AESLibrary(key, nonce)
+    random_key = get_random_bytes(16)
+
+    rsalib = RSALibrary(key_length)
+
+    key = rsalib.generate_key()
+    private_key = rsalib.private_key(key,"private.pem")
+    public_key = rsalib.public_key(key,"public.pem")
+
+    encrypt_rsa = rsalib.encrypt_rsa(random_key,"public.pem")
+    decrypt_rsa = rsalib.decrypt_rsa(encrypt_rsa, "private.pem")
+
+    # debugging code
+    # print("random_key : ", random_key)    
+    # print("encrypt_rsa : ", encrypt_rsa)
+    # print("decrypt_rsa : ", decrypt_rsa)
+
+    aeslib = AESLibrary(random_key, nonce)
 
     while True:
         cmdline = input("Command:")

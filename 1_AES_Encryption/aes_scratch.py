@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 
 sBox = [
     [0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76],
@@ -185,6 +186,7 @@ class AESScratch:
         return result
 
     def encrypt(self, filename):
+        time_start = datetime.datetime.now()
         counter = self.ctr(filename)
 
         # read plain text
@@ -208,9 +210,12 @@ class AESScratch:
         encryptedfilename = filename + ".enc"
         self.convertfile(ciphertext, filename, encryptedfilename)
 
-        return(f"file {filename} has been encrypted to {encryptedfilename}")
+        time_end = datetime.datetime.now()
+        time_total = time_end - time_start
+        return(f"file {filename} has been encrypted to {encryptedfilename} with total time {time_total} seconds")
 
     def decrypt(self, filename):
+        time_start = datetime.datetime.now()
         counter = self.ctr(filename)
 
         # read ciphertext
@@ -234,7 +239,9 @@ class AESScratch:
         decryptedfilename = filename[:-4]
         self.convertfile(plaintext, filename, decryptedfilename)
 
-        return (f"file {filename} has been decrypted to {decryptedfilename}")
+        time_end = datetime.datetime.now()
+        time_total = time_end - time_start
+        return (f"file {filename} has been decrypted to {decryptedfilename} with total time {time_total} seconds")
 
     def convertfile(self, text, fromfile, tofile):
         fp = open(f"{tofile}", 'wb+')
